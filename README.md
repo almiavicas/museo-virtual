@@ -58,3 +58,8 @@ https://pannellum.org/
 ## Escenas
 
 Para ver la documentacion de como se arman las esceneas ir a la documentacion oficial de [Pannellum](https://pannellum.org/documentation/reference/).
+
+
+## Croquis
+
+El mapa es una extensión de panellum para poder cambiar los escenarios en cualquier momento
