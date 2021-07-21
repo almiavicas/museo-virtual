@@ -34,8 +34,10 @@ export class RemovePinsComponent implements OnInit {
   }
 
   aceptar(){
-    this.tour.pins.splice( parseInt(this.seleccionado), 1 );
-    this.tour.views.splice( parseInt(this.seleccionado), 1 );
+    if(!(this.seleccionado === "Pin a eliminar")){
+      this.tour.pins.splice( parseInt(this.seleccionado), 1 );
+      this.tour.views.splice( parseInt(this.seleccionado), 1 );
+    }
     this.dialogRef.close({
       result: this.tour,
     })

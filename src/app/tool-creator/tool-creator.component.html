@@ -20,6 +20,9 @@
 
     <!-- Panorama, Lista de Escenas, Listas de Hotspots -->
     <div>
+        <a *ngIf="showPano && !election" [href]="sanitizedBlobUrl" [download]="filename" type="button" class="btn btn-primary btn-sm mr-2" (click)="downloadJson()">
+            <button color="primary" mat-button>Descargar json</button>
+        </a>
 
         <!-- Panorama -->
         <div id="panorama" style="width: 68.1vw; height: 60vh" *ngIf="showPano && !election"></div>
@@ -30,7 +33,7 @@
 
         <!-- Tabs: Lista de Escenas, Lista de Hotspots de la Escena, Lista de Todos los Hotspots -->
         <div class="row" style="width: 68.1vw; height: 22.5vh">
-            <div id="hotspots-view" class="background-color-primary" *ngIf="showPano">
+            <div id="hotSpots-view" class="background-color-primary" *ngIf="showPano">
                 <mat-tab-group animationDuration="100ms" [backgroundColor]="'primary'">
                     
                     <!-- Lista de Escenas (Carousel) -->
@@ -42,9 +45,12 @@
                                          (click)="goScene(scene)">
                                         <div class="card">
                                             <div class="img">
-                                                <img class="image" src="{{pannellumService.getImageSource(scene)}}" alt="">
+                                                <img class="image" [attr.src]="pannellumService.getImageSource(scene)" alt="">
                                             </div>
                                             <div class="info">{{pannellumService.getSceneTitle(scene)}}</div>
+                                            <button class="button" (click)="removeScene(scene)" style="position: absolute; margin-left: 163px; background-color: rgb(37, 37, 37); margin-top: -2px; opacity: 0.9;">
+                                                <i class="material-icons" style="color: red;">close</i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -100,13 +106,13 @@
                     <mat-form-field appearance="fill" class="form-field">
                         <mat-label>Tipo de HotSpot</mat-label>
                         <mat-select [formControl]="hotspotTypeInput">
-                            <mat-option *ngFor="let h of hotspots" [value]="h.value">
+                            <mat-option *ngFor="let h of hotSpots" [value]="h.value">
                                 {{h.name}}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
 
-                    <div id="hotspot-scene" class="hotspots-fields" *ngIf="hotspotTypeInput.value == 'scene'">
+                    <div id="hotspot-scene" class="hotSpots-fields" *ngIf="hotspotTypeInput.value == 'scene'">
                         <!-- TITULO -->
                         <h3>Hotspot de Cambio de Escena</h3>
 
@@ -185,7 +191,7 @@
 
                     </div>
 
-                    <div id="hotspot-info" class="hotspots-fields" *ngIf="hotspotTypeInput.value == 'info'">
+                    <div id="hotspot-info" class="hotSpots-fields" *ngIf="hotspotTypeInput.value == 'info'">
 
                         <h3>Hotspot de Info</h3>
 
@@ -216,7 +222,7 @@
                         </mat-form-field>
                     </div>
 
-                    <div id="hotspot-custom" class="hotspots-fields" *ngIf="hotspotTypeInput.value == 'custom'">
+                    <div id="hotspot-custom" class="hotSpots-fields" *ngIf="hotspotTypeInput.value == 'custom'">
 
                         <h3>Hotspot Personalizado</h3>
 
@@ -304,6 +310,28 @@
                                         placeholder="Ruta de la imagen del Modal">
                                 </mat-form-field>
 
+                                <!-- WIDTH IMAGE -->
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Width</mat-label>
+                                    <input matInput [formControl]="hotspotModalWidthInput" type="number"
+                                        placeholder="Ancho de la imagen del Modal">
+                                </mat-form-field>
+                                
+                                <!-- HEIGHT IMAGE -->
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Hight</mat-label>
+                                    <input matInput [formControl]="hotspotModalHeightInput" type="number"
+                                        placeholder="Alto de la imagen del Modal">
+                                </mat-form-field>
+
+                                
+                                <!-- ALT IMAGE -->
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Alt</mat-label>
+                                    <input matInput [formControl]="hotspotModalAltInput" type="text"
+                                        placeholder="Alt de la imagen del Modal">
+                                </mat-form-field>
+
                             </mat-expansion-panel>
                         </mat-accordion>
 
@@ -322,6 +350,7 @@
                 </form>
             </mat-tab>
 
+            <!-- Vista tab del minimapa -->
             <mat-tab label="Minimapa">
                 <input type="file" id="image_uploads" name="image_uploads" accept=".jpg, .jpeg, .png" (change)="onFileSelected($event)" style="margin-top: 15px;">
                 <div *ngIf="!nuevo_pin"><img id = "minimapa" src="assets\images\no_minimapa.png" width="400" height="400"></div>
@@ -334,38 +363,34 @@
                     </ol>
                 </div>
                 <div>
-                    <button  mat-button (click)="addPin()"> Agregar Pin </button >
-                    <button  mat-button (click)="removePin()"> Eliminar Pin </button >
+                    <button  mat-button (click)="addPin()"  [disabled]="!newMinimap"> Agregar Pin </button >
+                    <button  mat-button (click)="removePin()" [disabled]="!newMinimap"> Eliminar Pin </button >
                 </div>
+            </mat-tab>
+
+            <!-- Vista tab para agregar escenas -->
+            <mat-tab label= "Agregar escena" >
+                <input type="file" id="image_upload" name="image_upload" accept=".jpg, .jpeg, .png" (change)="FileSelected($event)" style="margin-top: 15px;">
+                <div id="preview" style="height: 350px; width: 400px; background-image: url(/assets/images/no_escenas.png); background-size: 300px 400px; background-repeat: no-repeat; background-position: center; margin-left: 10%;"></div>
+                <form [formGroup]="formNewScene" (ngSubmit)="onSubmit()">
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Nombre de la escena</mat-label>
+                        <input matInput id="name" type="text" formControlName="name">
+                    </mat-form-field>
+                    <label *ngIf="errorNewScene" style="color: crimson;">Ya existe una escena con este nombre.</label>
+
+                    <div>
+                        <button  mat-button type="submit" [disabled]="!formNewScene.valid || !newScene"> Agregar escena </button >
+                    </div>
+                  
+                </form>
+                
+                
             </mat-tab>
         </mat-tab-group>
     </div>
 </div>
 
-
-<!-- Mostrar sección de minimapa
-<div class="row">
-    <div id="hotspots-view" *ngIf="showPano">
-        <mat-tab-group animationDuration="100ms">
-            <mat-tab label="Minimapa">
-                <input type="file" id="image_uploads" name="image_uploads" accept=".jpg, .jpeg, .png" (change)="onFileSelected($event)">
-                <div *ngIf="!nuevo_pin"><img id = "minimapa" src="assets\images\no_minimapa.png" width="400" height="400"></div>
-                <div class="croquis-content" *ngIf="nuevo_pin">
-                    <app-canvas_minimapa [pins]="tour.result.pins" [selectedPin]="selectedPin" [imagen]="minimapa" [lugar]= "false" (onClick)="onPinClick($event)" class="croquis"></app-canvas_minimapa>
-                    <ol>
-                        <li  *ngFor="let pins of tour.result.views">
-                            {{pins}}
-                        </li>
-                    </ol>
-                </div>
-                <div>
-                    <button  mat-button (click)="addPin()"> Agregar Pin </button >
-                    <button  mat-button (click)="removePin()"> Eliminar Pin </button >
-                </div>
-            </mat-tab>
-        </mat-tab-group>
-    </div>
-</div>-->
-
-
+<!-- Input para escoger el archivo json -->
 <input hidden type="file" id="file" (change)="onJsonFileChanged( $event )" />

@@ -1,7 +1,7 @@
 <h1 mat-dialog-title style="text-align: center;">Selecciona el pin a eliminar</h1>
 <div mat-dialog-content style="text-align: center;">
     <select name="miselect" [(ngModel)]="seleccionado">
-        <option> Pin a eliminar </option>
+        <option disabled> Pin a eliminar </option>
         <option [value]="i" *ngFor="let item of tour.pins; ; let i = index">{{i+1}}</option> 
     </select>
 </div>

@@ -1,28 +1,29 @@
-<h1 mat-dialog-title>Artifact Details</h1>
-<div mat-dialog-content class="d-flex">
+<!-- Artifact Details Dialog (User: 'admin') -->
+<h1 *ngIf="userRole=='admin'" mat-dialog-title>Detalles del Artefacto</h1>
+<div *ngIf="userRole=='admin'" mat-dialog-content class="d-flex">
   <form class="expand padding">
     <mat-form-field appearance="fill" class="expand">
       <mat-label>Id</mat-label>
       <input matInput disabled [value]="data.artifact.id" />
     </mat-form-field>
     <mat-form-field appearance="fill" class="expand">
-      <mat-label>Name</mat-label>
-      <input matInput disabled [value]="data.artifact.artifactLabel" />
+      <mat-label>Nombre</mat-label>
+      <input matInput disabled [value]="data.artifact.labelArtifact" />
     </mat-form-field>
     <mat-form-field appearance="fill" class="expand">
       <mat-label>Material</mat-label>
       <input matInput disabled [value]="data.artifact.labelMaterial" />
     </mat-form-field>
     <mat-form-field appearance="fill" class="expand">
-      <mat-label>Creator</mat-label>
+      <mat-label>Autor</mat-label>
       <input matInput disabled [value]="data.artifact.labelCreator" />
     </mat-form-field>
     <mat-form-field appearance="fill" class="expand">
-      <mat-label>Museum Room</mat-label>
+      <mat-label>Ubicación</mat-label>
       <input matInput disabled [value]="data.artifact.labelLocation" />
     </mat-form-field>
     <mat-form-field appearance="fill" class="expand">
-      <mat-label>Comments</mat-label>
+      <mat-label>Comentarios</mat-label>
       <textarea
         rows="3"
         matInput
@@ -32,7 +33,25 @@
     </mat-form-field>
   </form>
 </div>
-<div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Close</button>
-  <button mat-button [mat-dialog-close]="data.artifact">Save</button>
+<div *ngIf="userRole=='admin'" mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cerrar</button>
+  <button mat-button [mat-dialog-close]="data.artifact">Guardar</button>
+</div>
+
+<!-- Artifact Details Dialog (User: 'visitante') -->
+<div *ngIf="userRole=='visitante'">
+  <mat-card-title style="margin-bottom: 20px; line-height: 1.2; text-align: center"> {{ data.artifact.labelArtifact }} </mat-card-title>
+
+  <mat-card-subtitle style="margin-bottom: 0px"> Material </mat-card-subtitle>
+  <mat-card-content> {{ data.artifact.labelMaterial }} </mat-card-content>
+  <mat-card-subtitle style="margin-bottom: 0px"> Ubicación </mat-card-subtitle>
+  <mat-card-content> {{ data.artifact.labelLocation }} </mat-card-content>
+  <mat-card-subtitle style="margin-bottom: 0px"> Autor </mat-card-subtitle>
+  <mat-card-content> {{ data.artifact.labelCreator }} </mat-card-content>
+  <mat-card-subtitle style="margin-bottom: 0px"> Comentarios </mat-card-subtitle>
+  <mat-card-content> {{ data.artifact.note }} </mat-card-content>
+
+  <div mat-dialog-actions style="justify-content: center">
+    <button mat-button tabindex="-1" color="accent" (click)="onNoClick()">Cerrar</button>
+  </div>
 </div>

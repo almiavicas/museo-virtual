@@ -1,5 +1,142 @@
 <p *ngIf="!museumArtifacts">Loading...</p>
-<mat-grid-list cols="2" rowHeight="400" *ngIf="museum" class="margin">
+
+<!-- Botón para regresar (Usuario: visitante) -->
+<div *ngIf="userRole=='visitante'">
+  <button mat-raised-button [routerLink]="['/']" class="back-button mat-elevation-z0">
+    <mat-icon>arrow_back</mat-icon>
+    Volver
+  </button>
+</div>
+
+<!-- Información sobre el Museo (Usuario: visitante) -->
+<div *ngIf="userRole=='visitante'" style="position: relative">
+  <!-- Imagen del Museo -->
+  <img class="cover-image" src="https://www.wamanadventures.com/blog/wp-content/uploads/2018/05/Museo-Larco-Waman-Adventures-2.jpg">
+
+  <!-- Descripción del Museo sobre la imagen -->
+  <div class="cover-card" style="max-height: 90%; overflow: hidden">
+    <mat-card-title class="title-page">{{ museum.title }}</mat-card-title>
+    <mat-card-subtitle class="subtitle-page">Aliquam egestas elementum mid et, sit habitasse ac et lorem in urna nunc ac phasellus, et turpis! Turpis, integer. Dignissim, ut dolor ut, in pulvinar tincidunt natoque porttitor eros. Aliquam egestas elementum mid et, sit habitasse ac et lorem in urna nunc ac phasellus, et turpis! Turpis, integer. Dignissim, ut dolor ut, in pulvinar tincidunt natoque porttitor eros.</mat-card-subtitle>
+    <hr size="1" width="65%" class="title-line">
+  </div>
+</div>
+
+<!-- Información sobre Recorridos Virtuales (Usuario: visitante) -->
+<div *ngIf="userRole=='visitante'" class="title-div">
+  <mat-card-title class="virtual-tour-title">RECORRIDOS VIRTUALES</mat-card-title>
+  <hr class="inline-line" size="1" />
+</div>
+
+<mat-grid-list *ngIf="userRole=='visitante'" [cols]="breakpoint" rowHeight="200" [gutterSize]="'0px'" class="grid-list" style="margin-bottom: 40px">
+  
+  <!-- Introducción a los recorridos virtuales -->
+  <mat-grid-tile>
+    <div class="virtual-tour-text">
+      Realiza una visita al museo siguiendo uno de nuestros recorridos virtuales. Recorre las salas del museo y conoce cada una de sus obras.
+
+      <button mat-raised-button [routerLink]="['/admin']" class="button-tour button-color-accent" color="accent">
+        INICIAR RECORRIDO
+        <mat-icon style="transform: scale(0.7)">arrow_forward</mat-icon>
+      </button>
+    </div>
+  </mat-grid-tile>
+
+  <!-- Información introductoria sobre salas que se pueden ver durante el recorrido -->
+  <mat-grid-tile>
+    <div class="tour-info-card" style="overflow: hidden">
+      <img class="tour-info-image" src="https://cdn.viajala.com/img/blog/museo-larco-1.jpg">
+      
+      <div style="width: 60%">
+        <mat-card-title class="tour-info-title"> Navega entre salas </mat-card-title>
+        <hr size="1" width="70%" />
+        <mat-card-content class="tour-info-content"> Visita las salas de tu preferencia utilizando el carrusel de escenas del recorrido para navegar entre ellas. </mat-card-content>
+      </div>
+
+    </div>
+  </mat-grid-tile>
+
+  <!-- Información introductoria sobre obras que se pueden ver durante el recorrido -->
+  <mat-grid-tile>
+    <div class="tour-info-card" style="overflow: hidden">
+      <img class="tour-info-image" src="https://talesofabackpacker.com/wp-content/uploads/2018/12/Indigenous-Art-in-Cusco-Peru-1024x678.jpg">
+      
+      <div style="width: 60%">
+        <mat-card-title class="tour-info-title"> Explora nuestras obras </mat-card-title>
+        <hr size="1" width="70%" />
+        <mat-card-content class="tour-info-content"> Descubre las obras de cada sala durante el recorrido virtual. Conoce los materiales utilizados en ellas, sus autores y mucho más... </mat-card-content>
+      </div>
+
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
+
+
+<!-- Salas del Museo (Usuario: visitante) -->
+<div *ngIf="userRole=='visitante'" class="title-div" style="justify-content: center">
+  <!-- Título para la sección de salas -->
+  <hr size="1" class="inline-line" style="margin-right: 10px" />
+  <mat-card-title class="virtual-tour-title" style="width:320px; text-align: center">NUESTRAS SALAS</mat-card-title>
+  <hr size="1" class="inline-line" style="margin-left: 5px" />
+</div>
+
+<mat-grid-list *ngIf="userRole=='visitante'" [cols]="breakpoint" rowHeight="200" [gutterSize]="'0px'" class="grid-list">
+  <!-- Cartas para las salas del museo -->
+  <mat-grid-tile *ngFor="let room of museumRooms">
+    <mat-card style="width: 300px; height: 100px; overflow: hidden">
+
+      <div class="circle-number background-color-accent">
+        {{ 
+          museumRooms.indexOf(room) + 1 < 10
+          ? "0" + (museumRooms.indexOf(room) + 1)
+          : museumRooms.indexOf(room) + 1 
+        }}
+      </div>
+
+      <mat-card-content class="room-content"> {{ room }} </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
+
+
+<!-- Obras del Museo (Usuario: visitante) -->
+<div *ngIf="userRole=='visitante'" class="title-div">
+  <mat-card-title class="virtual-tour-title" style="width: 200px; text-align: center">NUESTRAS OBRAS</mat-card-title>
+  <hr class="inline-line" size="1" style="width: 100%" />
+</div>
+
+<div *ngIf="userRole=='visitante'">
+  <mat-paginator #paginator [pageSizeOptions]="[3, 6, 9, 18]"></mat-paginator>
+  <mat-grid-list [cols]="breakpoint" (window:resize)="onResize($event)" rowHeight="500" [gutterSize]="'0px'" class="grid-list">
+    
+    <!-- Cartas para las obras del museo -->
+    <mat-grid-tile *ngFor="let artifact of obs | async">
+      <mat-card class="artifact-card">
+
+        <mat-card-title style="margin-bottom: 20px; line-height: 1.2" class="title-artifact-card"> {{ artifact.labelArtifact }} </mat-card-title>
+
+        <img class="artifact-image" src="{{ getArtifactImage(artifact.id) }}" 
+             onerror="this.src='./assets/images/no_image.png'; this.style.width='50px'; this.style.height='50px'; this.style.marginTop='20px'; this.style.opacity='0.1';"  alt="..." />
+
+        <mat-card-subtitle style="margin-bottom: 0px"> Autor </mat-card-subtitle>
+        <mat-card-content> {{ artifact.labelCreator }} </mat-card-content>
+        <mat-card-subtitle style="margin-bottom: 0px"> Ubicación </mat-card-subtitle>
+        <mat-card-content> {{ artifact.labelLocation }} </mat-card-content>
+
+        <div>
+          <button mat-raised-button class="button-comments button-color-accent" (click)="openArtifactDialog(artifact)"> Ver más </button>
+        </div>
+      </mat-card>
+
+    </mat-grid-tile>
+  </mat-grid-list>
+  <mat-paginator (page)="syncPrimaryPaginator($event)" [pageSize]="paginator.pageSize" [pageIndex]="paginator.pageIndex"
+    [length]="paginator.length" [pageSizeOptions]="paginator.pageSizeOptions"></mat-paginator>
+</div>
+
+
+
+<!-- Información sobre el Museo (Usuario: admin) -->
+<mat-grid-list cols="2" rowHeight="400" *ngIf="museum && userRole=='admin'" class="margin">
   <mat-grid-tile>
     <img [src]="museum.featuredImage" alt="Featured Image" />
   </mat-grid-tile>
@@ -11,7 +148,7 @@
         color="accent"
         (click)="toggleEditMode()"
       >
-        Edit
+        Editar
         <mat-icon>edit</mat-icon>
       </button>
       <button
@@ -20,25 +157,25 @@
         color="primary"
         (click)="saveChanges()"
       >
-        Save
+        Guardar
         <mat-icon>save</mat-icon>
       </button>
       <button mat-raised-button color="warn" (click)="openDeleteDialog()">
-        Delete
+        Eliminar
         <mat-icon>delete</mat-icon>
       </button>
     </div>
     <form class="expand padding">
       <mat-form-field appearance="fill" class="expand">
-        <mat-label>Title</mat-label>
+        <mat-label>Título</mat-label>
         <input matInput [disabled]="!editMode" [value]="museum.title" />
       </mat-form-field>
       <mat-form-field appearance="fill" class="expand">
-        <mat-label>Location</mat-label>
+        <mat-label>Ubicación</mat-label>
         <input matInput [disabled]="!editMode" [value]="museum.location" />
       </mat-form-field>
       <mat-form-field appearance="fill" class="expand">
-        <mat-label>Description</mat-label>
+        <mat-label>Descripción</mat-label>
         <textarea
           matInput
           [disabled]="!editMode"
@@ -48,8 +185,10 @@
     </form>
   </mat-grid-tile>
 </mat-grid-list>
-<h2>Scenes</h2>
-<mat-grid-list cols="8" rowHeight="150" gutterSize="8" class="margin">
+
+<!-- Escenas (Usuario: admin) -->
+<h2 *ngIf="userRole=='admin'">Escenas</h2>
+<mat-grid-list *ngIf="userRole=='admin'" cols="8" rowHeight="150" gutterSize="8" class="margin">
   <mat-grid-tile *ngFor="let viewUrl of museumViews">
     <mat-card>
       <img mat-card-image [src]="viewUrl" />
@@ -72,13 +211,16 @@
   </mat-grid-tile>
 </mat-grid-list>
 
-<h2>Rooms</h2>
-<mat-list role="list">
+<!-- Salas del Museo (Usuario: admin) -->
+<h2 *ngIf="userRole=='admin'">Salas</h2>
+<mat-list *ngIf="userRole=='admin'" role="list">
   <mat-list-item *ngFor="let room of museumRooms" role="listitem">
     {{ room }}
   </mat-list-item>
 </mat-list>
-<div class="mat-elevation-z8 table">
+
+<!-- Tabla de Artefactos (Usuario: admin) -->
+<div *ngIf="userRole=='admin'" class="mat-elevation-z8 table">
   <table mat-table [dataSource]="matTableDataSource">
     <ng-container matColumnDef="id">
       <th mat-header-cell *matHeaderCellDef>ID</th>
@@ -92,23 +234,23 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="artifactLabel">
-      <th mat-header-cell *matHeaderCellDef>Artifact</th>
-      <td mat-cell *matCellDef="let element">{{ element.artifactLabel }}</td>
+      <th mat-header-cell *matHeaderCellDef>Artefacto</th>
+      <td mat-cell *matCellDef="let element">{{ element.labelArtifact }}</td>
     </ng-container>
     <ng-container matColumnDef="labelMaterial">
       <th mat-header-cell *matHeaderCellDef>Material</th>
       <td mat-cell *matCellDef="let element">{{ element.labelMaterial }}</td>
     </ng-container>
     <ng-container matColumnDef="labelCreator">
-      <th mat-header-cell *matHeaderCellDef>Creator</th>
+      <th mat-header-cell *matHeaderCellDef>Autor</th>
       <td mat-cell *matCellDef="let element">{{ element.labelCreator }}</td>
     </ng-container>
     <ng-container matColumnDef="labelLocation">
-      <th mat-header-cell *matHeaderCellDef>Room</th>
+      <th mat-header-cell *matHeaderCellDef>Ubicación</th>
       <td mat-cell *matCellDef="let element">{{ element.labelLocation }}</td>
     </ng-container>
     <ng-container matColumnDef="note">
-      <th mat-header-cell *matHeaderCellDef>Comments</th>
+      <th mat-header-cell *matHeaderCellDef>Comentarios</th>
       <td mat-cell *matCellDef="let element">
         {{
           element.note.length > 100

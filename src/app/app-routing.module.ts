@@ -10,24 +10,35 @@ import { AddMuseumComponent} from './views/add-museum/add-museum.component';
 const routes: Routes = [
   {
     path: 'admin/:id',
-    component: TourDetailsComponent
+    component: TourDetailsComponent,
+    data: {toolbar:true},
   },
   {
     path: 'admin',
     component: VirtualMuseumComponent,
+    data: {toolbar:false},
   },
   {
     path: 'tool-creator',
-    component: ToolCreatorComponent
+    component: ToolCreatorComponent,
+    data: {toolbar:true},
   },
   {
     path: '',
     component: LandingComponent,
-    pathMatch: 'full'
+    pathMatch: 'full',
+    data: {toolbar:true},
+  },
+  {
+    path: 'landing',
+    component: LandingComponent,
+    pathMatch: 'full',
+    data: {toolbar:true},
   },
   {
     path: 'add-museum',
     component: AddMuseumComponent,
+    data: {toolbar:true},
   }
 ];
 

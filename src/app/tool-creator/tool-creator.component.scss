@@ -48,7 +48,7 @@
     flex-direction: column;
     align-items: center;
     border-radius: 5px;
-    box-shadow: 0 1px 1px 1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 1px 0 rgba(0,0,0,.12) !important;  // no estaba
+    box-shadow: 0 1px 1px 1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 1px 0 rgba(0,0,0,.12) !important;
     overflow-y: auto;
 }
 
@@ -63,7 +63,7 @@ mat-form-field{
     margin: 10px 0;
 }
 
-#hotspots-view{
+#hotSpots-view{
     width: 100vw;
     padding: 5px;
     display: flex;
@@ -89,7 +89,7 @@ mat-form-field{
     box-shadow: 0 3px 3px 3px rgba(0,0,0,.2), 0 3px 3px 0 rgba(0,0,0,.14), 0 3px 3px 0 rgba(0,0,0,.12) !important;
 }
 
-.hotspots-fields{
+.hotSpots-fields{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -99,6 +99,7 @@ mat-form-field{
 #hotspot-form{
     width: 100%;
     padding-top: 40px;
+    padding-bottom: 20px;
 }
 
 .add-hotspot-button{
@@ -237,5 +238,10 @@ mat-form-field{
     align-items: center;
     font-size: 13px;
     font-weight: bold;
+}
+
+.btn-primary {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
 }
 

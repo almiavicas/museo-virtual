@@ -11,7 +11,9 @@
 }
 
 .button-toolbar {
-	font-size: 14px;
+	font-size: 10px;
+	letter-spacing: 2px;
+	box-shadow: 0 0px 0px 0px rgba(0,0,0,0), 0 0px 0px 0 rgba(0,0,0,0), 0 0px 0px 0 rgba(0,0,0,0) !important;
 }
 
 .button-toolbar:hover {
@@ -21,7 +23,8 @@
 
 .header-title{
 	font-family: "monospace";
-	font-size: 40px;
+	font-size: 25px;
+	font-style: italic;
 }
 
 .title-line{
@@ -31,3 +34,8 @@
 	border-right: 0px; 
 	border-left: 0px;
 }
+::ng-deep .custom-modalbox {
+	mat-dialog-container {
+		padding: 0;
+	}
+	}

@@ -1,5 +1,5 @@
 import { Component, OnInit, SecurityContext } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {DomSanitizer} from '@angular/platform-browser';
@@ -10,6 +10,8 @@ import { ModalMinimapComponent } from './modal_minimap/modal_minimap.component';
 import { RemovePinsComponent } from './remove_pins/remove_pins.component';
 import { MsgErrorComponent } from './msg-error/msg-error.component';
 
+declare var pannellum
+
 @Component({
   selector: 'app-tool-creator',
   templateUrl: './tool-creator.component.html',
@@ -17,17 +19,24 @@ import { MsgErrorComponent } from './msg-error/msg-error.component';
 })
 export class ToolCreatorComponent implements OnInit {
 
+  errorNewScene = false;
   showPano = false;
   customIconField = false;
   modalField = false;
   election = false;
   nuevo_pin = false;
+  newScene = false;
+  newMinimap = false;
   minimapa = <HTMLImageElement>document.getElementById('minimapa');
   tour;
   selectedPin = 0;
   selectedView: string;
+  urLPanorama: string;
+  formNewScene = new FormGroup({
+    name: new FormControl('', Validators.required),
+  });
 
-  hotspots = [
+  hotSpots = [
     {value: '', name: "Elegir un tipo"},
     {value: 'scene', name: 'Escena'},
     {value: 'info', name: 'Info'},
@@ -70,6 +79,9 @@ export class ToolCreatorComponent implements OnInit {
   hotspotModalTitleInput: FormControl = new FormControl('', [])
   hotspotModalDescriptionInput: FormControl = new FormControl('', [])
   hotspotModalImageURLInput: FormControl = new FormControl('', [])
+  hotspotModalWidthInput: FormControl = new FormControl('', [])
+  hotspotModalHeightInput: FormControl = new FormControl('', [])
+  hotspotModalAltInput: FormControl = new FormControl('', [])
 
   // TODO: FALTA IMPLEMENTAR
   hotspotModalImageAltInput: FormControl = new FormControl('', [])
@@ -84,6 +96,11 @@ export class ToolCreatorComponent implements OnInit {
 
   showMessageErrorJson = false;
 
+  backupType: string; // 'bookmarks' | 'snippets';
+  blobUrl: any;
+  sanitizedBlobUrl: any;
+  filename: string;
+
   constructor(
     private sanitizer: DomSanitizer,
     public pannellumService: PannellumService,
@@ -96,9 +113,39 @@ export class ToolCreatorComponent implements OnInit {
     this.tour = local;
   }
 
-public cero() {
+  /**
+  * cero()
+  *
+  * Funcion que permite crear un recorrido desde 0
+  */
+public async cero() {
+  //creamos el file predeterminado para un recorrido nuevo
+  let response = await fetch('/assets/images/cero.json');
+  let data = await response.blob();
+  let metadata = {
+    type: 'application/json'
+  };
+  let file = new File([data], "cero.json", metadata);
   this.showPano = true;
-  this.election = true;
+  this.jsonFile = file;
+  // Leer archivo como texto
+  const fileReader = new FileReader();
+  fileReader.readAsText(this.jsonFile, "UTF-8");
+
+  // Cuando cargue
+  fileReader.onload = (e) => {
+  // Parsearlo a Json
+  this.jsonConfig = JSON.parse(String(e.target.result));
+  
+  // Contruir el panorama 
+   this.constructPannellum()
+  }
+
+  // Si da error la carga
+  fileReader.onerror = (error) => {
+    console.log(error);
+    alert("No se pudo cargar el config :(")
+  }
 }
 
 public goScene(scene) {
@@ -121,8 +168,6 @@ public goScene(scene) {
    * Maneja las configuraciones que viene en archivo Json
    */
    onJsonFileChanged(event) {
-    //console.log("hola");
-    
     this.jsonFile = event.target.files[0];
     // Leer archivo como texto
     const fileReader = new FileReader();
@@ -151,7 +196,7 @@ public goScene(scene) {
    */
   public constructPannellum() {
     // Cargar las escenas con las configs obtenidas del json
-    let escenas = this.pannellumService.constructScenes(this.jsonConfig)
+    let escenas = this.pannellumService.constructScenes(this.jsonConfig);
 
     if(escenas['error']) {
       this.showMsgJsonError(escenas['error']);
@@ -180,7 +225,6 @@ public goScene(scene) {
    * addHotspot
    */
   public addHotspot() {
-
     // Variable de error, por si algun campo reqeurido no fue llenado
     let error: boolean= false;
     // Para saber si es un hotspot nativo de pannellum o custom
@@ -260,6 +304,9 @@ public goScene(scene) {
       let modalTitle = this.hotspotModalTitleInput.value
       let modalDescription = this.hotspotModalDescriptionInput.value
       let modalImageSrc = this.hotspotModalImageURLInput.value
+      let modalImageWidth = this.hotspotModalWidthInput.value
+      let modalImageHeight = this.hotspotModalHeightInput.value
+      let modalImageAlt = this.hotspotModalAltInput.value
       let modal: HotspotModal = null;
       let imagen: CustomImage = null;
       // Contruir el modal
@@ -267,7 +314,10 @@ public goScene(scene) {
         if( modalImageSrc ){
           // Contruir la imagen del modal
           imagen = {
-            src: modalImageSrc
+            src: modalImageSrc,
+            width: modalImageWidth,
+            height: modalImageHeight,
+            alt: modalImageAlt
           }
         }
         // Resto del modal
@@ -277,7 +327,6 @@ public goScene(scene) {
           imagen: imagen,
         }
       }
-
 
       // ////////////////////////
       // Construir el Hotspot
@@ -292,8 +341,6 @@ public goScene(scene) {
           customIcon: icon
         }
       }
-
-
     }
     else{
       error = true
@@ -315,7 +362,7 @@ public goScene(scene) {
       
     }
 
-    
+    console.log(this.jsonConfig);    
   }
 
   /**
@@ -325,7 +372,7 @@ public goScene(scene) {
 
     const dialogRef = this.dialog.open(RemoveHotspotComponent, {
       width: '250px',
-      data: {name: hotspot.text}
+      data: {name: hotspot.text, type: false}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -346,18 +393,43 @@ public goScene(scene) {
   * Funcion que permite abrir la imagen que se va a usar como minimapa
   */
   onFileSelected(event) {
-    // colocamos el tour en vacio
-    let local: any;
-    this.tour = local;
+    var target = event.target || event.srcElement;
+    if(target.value.length != 0){
+      this.newMinimap = true;
+      // colocamos el tour en vacio
+      let local: any;
+      this.tour = local;
 
     // permite verificar si ya se agrego un pin al minimapa
-    this.nuevo_pin = false;
-
+    
+    
+      this.nuevo_pin = false;
+    
+    
     // cambiamos el src para mostar la imagen
-    var image = <HTMLImageElement>document.getElementById('minimapa');
+      var image = <HTMLImageElement>document.getElementById('minimapa');
+      let nueva_url = URL.createObjectURL(event.target.files[0]);
+      image.src = nueva_url
+      this.minimapa = <HTMLImageElement>event.target.files[0];
+    }
+    
+  }
+
+  /**
+  * FileSelected(event)
+  *
+  * Funcion que permite abrir la imagen que se va a usar como minimapa
+  */
+   FileSelected(event) {
     let nueva_url = URL.createObjectURL(event.target.files[0]);
-    image.src = nueva_url
-    this.minimapa = <HTMLImageElement>event.target.files[0];
+    this.urLPanorama = URL.createObjectURL(event.target.files[0]);
+    //this.urlPanorama = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(event.target.files[0]));
+    pannellum.viewer('preview', {
+      "type": "equirectangular",
+      "panorama": nueva_url,
+      "autoLoad": true
+  });
+    this.newScene = true;
   }
 
   /**
@@ -395,7 +467,7 @@ public goScene(scene) {
    /**
   * removePin()
   *
-  * Funcion que permite anadir un pin al minimapa
+  * Funcion que permite remover un pin al minimapa
   */
     public removePin() {
       // abrimos el modal
@@ -457,16 +529,92 @@ public goScene(scene) {
       document.getElementById("prev").style.display = "none";
     }
   }
-
   public showMsgJsonError(msgError = '') {
     // abrimos el modal
-      const dialogRef = this.dialog.open(MsgErrorComponent, {
-        width: '25rem',
-        data: {messageTitle: 'El archivo json no corresponde con el schema', messageBody: msgError}
+    const dialogRef = this.dialog.open(MsgErrorComponent, {
+      width: '25rem',
+      data: {messageTitle: 'El archivo json no corresponde con el schema', messageBody: msgError}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.showMessageErrorJson = false;
+    });
+  }
+  
+  /**
+   * onSubmit()
+   * 
+   * Funcion que permite enviar el formulario de la nueva escena a agregar
+   * 
+   */
+  onSubmit() {
+    
+    //obtenemos todas las escenas para luego verificar si la escena que se va a añadir ya existe o no
+    let arrayScenas = this.pannellumService.getScenes()
+
+    // mostramos un error si existe
+    if(arrayScenas.includes(this.formNewScene.get('name').value)){
+      this.errorNewScene = true;
+    }
+
+    // agregamos la escena si no existe
+    else{
+      this.pannellumService.addSCene(this.formNewScene.get('name').value,[this.formNewScene.get('name').value,this.urLPanorama])
+      console.log(this.pannellumService.getScenes())
+      this.errorNewScene = false;
+      this.formNewScene.reset();
+      pannellum.viewer('preview', {
+        "type": "equirectangular",
+        "panorama": "/assets/images/no_escenas.png",
+        "autoLoad": true
       });
 
-      dialogRef.afterClosed().subscribe(result => {
-        this.showMessageErrorJson = false;
-      });
+      this.newScene = false;
+
+    }  
+  }
+
+  /**
+   * removeScene(scene)
+   * 
+   * Funcion que permite remover la escena seleccionada
+   * 
+   * @param scene id o nombre de la escena
+   */
+   public removeScene(scene) {
+
+    // verificamos que otra escena existe ya que no se puede eliminar la escena actual
+    var available = this.pannellumService.getScenes();
+    let other = available.filter(el => ![scene].includes(el));
+    this.pannellumService.setScene(other[0]);
+
+    // abrimos el modal
+    const dialogRef = this.dialog.open(RemoveHotspotComponent, {
+      width: '250px',
+      data: {name: scene, type: true }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      
+      if (result && result.result)
+        
+        this.pannellumService.removeSCene(scene)
+    });
+
+  }
+
+  public downloadJson() {
+    console.log('downloadJson');
+    console.log(this.jsonConfig);
+    console.log(this.minimapa);
+    console.log(this.tour);
+    console.log(this.pannellumService.parseSchenesJson());
+
+    const blob = new Blob([JSON.stringify(this.pannellumService.parseSchenesJson(), null, 2)], {type: 'application/json'});
+
+    this.blobUrl = window.URL.createObjectURL(blob);
+    this.sanitizedBlobUrl = this.sanitizer.bypassSecurityTrustUrl(this.blobUrl);
+    const currentDate = new Date();
+    this.filename = `${currentDate.toISOString()}.json`;
   }
 }

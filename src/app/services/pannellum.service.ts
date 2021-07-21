@@ -5,9 +5,9 @@ import { BehaviorSubject } from 'rxjs';
 import { CustomHotspot, InfoHotspot, SceneHotspot } from '../models/hotspot';
 import { ModalComponent } from '../virtual-museum/modal/modal.component';
 import { ApiService } from './api.service';
-
+import {DomSanitizer} from '@angular/platform-browser';
 import Ajv, {JSONSchemaType} from "ajv"
-import {DefinedError} from "ajv"
+import {DefinedError} from "ajv";
 const ajv = new Ajv()
 
 declare var pannellum
@@ -81,7 +81,6 @@ export class PannellumService {
             "type": {"type": "string"},
             "yaw": {"type": "number"},
             "createTooltipArgs":  { "$ref": "#/definitions/createTooltipArgs"},
-            "createTooltipFunc": {"type": "string"},
             "div": {"type": "string"},
             "url": {"type": "string"}
           },
@@ -89,15 +88,14 @@ export class PannellumService {
         },
         "default": []
       },
-      "scene": {
+      "scenes": {
         "type": "array",
         "items": {
           "properties": {
             "title": {"type": "string"},
             "panorama": {"type": "string"},
-            "type": {"type": "string"},
             "yaw": {"type": "number"},
-            "hotspots": { "$ref": "#/definitions/hotspot"}
+            "hotSpots": { "$ref": "#/definitions/hotspot"}
           },
           "required": ["title"]
         },
@@ -106,15 +104,15 @@ export class PannellumService {
     },
     "type": "object",
     "properties": {
-      "scene": { "$ref": "#/definitions/scene" }
+      "scenes": { "$ref": "#/definitions/scenes" }
     },
-    "required": ["scene"]
+    "required": ["scenes"]
   }
 
   constructor(
+    private sanitizer: DomSanitizer,
     public dialog: MatDialog,
     public apiServive: ApiService
-
   ) { }
 
   /**
@@ -144,120 +142,63 @@ export class PannellumService {
    * @returns sceneJson, el json formateado de manera que sea legible para pannellum para poder construir el tour
    */
   public constructScenes(config) {
-
+    console.log('config');
+    console.log(config);
+    
     // leer el archivo de configuracion
     // Construir cada Escena
+    this.scenes = [];
     this.sceneJson = {};
-    config.escenas.forEach(
-      escena => {
-        // Guardar el orden de las escenas
-        this.scenes.push(escena['id'])
+    config.scenes.forEach(
+      scene => {
+        // Guardar el orden de las scenes
+        this.scenes.push(scene['id'])
 
         // Construir cada Hotspot con la config
         let hotspotsArray = [];
-        escena.hotspots.forEach(
+        scene.hotSpots.forEach(
           hotspot => {
-
             // Crear los hotspot segun el tipo
-            let type = hotspot['tipo']
             let aux;
 
             // Usar el id o generarlo en caso de no especificarlo
-            let id = this.generateId(hotspot['id_hotspot'])
+            let id = this.generateId(hotspot['id'])
 
-            // SCENE HOTSPOT
-            if (type == "scene") {
-              aux = {
-                'id': id,
-                'pitch': hotspot['valor_angulo_y'],
-                'yaw': hotspot['valor_angulo_x'],
-                'text': hotspot['titulo'],
-                'type': hotspot['tipo'],
-                'sceneId': hotspot['id_escena'],
-                'targetYaw': hotspot['targetYaw'] || -23,
-                'targetPitch': hotspot['targetPitch'] || 2,
-                'cssClass': hotspot['clase_css'],
-              }
+            aux = {
+              'id': id,
+              'pitch': hotspot['pitch'],
+              'yaw': hotspot['yaw'],
+              'text': hotspot['text'],
+              'type': hotspot['type'],
+              'targetYaw': hotspot['targetYaw'] || -23,
+              'targetPitch': hotspot['targetPitch'] || 2,
+              'cssClass': hotspot['cssClass']
+            }
 
-              if ( hotspot['icono'] ){
-                aux.createTooltipFunc = this.hotspot.bind(this),
-                aux.createTooltipArgs= {
-                    'title': hotspot['titulo'],
-                    'id': hotspot['id_hotspot'],
-                    'customIcon': {
-                      'src': hotspot['icono'] || null,
-                      'alt': hotspot['attr_alt'] || null,
-                      'width': hotspot['ancho_icono'] || null,
-                      'height': hotspot['altura_icono'] || null,
-                    }
-                  }
+            if(hotspot['sceneId']) {
+              aux.sceneId = hotspot['sceneId'] || null
+            }
 
+            if(hotspot['url']) {
+              aux.url = hotspot['url'] || null
+            }
+
+            if (hotspot['createTooltipArgs'] ){
+              aux.createTooltipFunc = this.hotspot.bind(this),
+              aux.createTooltipArgs = {
+                  'title': hotspot['title'],
+                  'id': hotspot['id'],
+                  'customIcon': hotspot['createTooltipArgs']['customIcon']
               }
             }
 
-            // INFO HOTSPOT
-            else if (type == "info") {
-              aux = {
-                'id': id,
-                'pitch': hotspot['valor_angulo_y'],
-                'yaw': hotspot['valor_angulo_x'],
-                'text': hotspot['titulo'],
-                'type': hotspot['tipo'],
-                "URL": hotspot['url'],
-                'sceneId': hotspot['id_escena'],
-                'cssClass': hotspot['clase_css'],
-              }
-            }
-            // CUSTOM HOTSPOT
-            else {
-              aux = {
-                'id': id,
-                'pitch': hotspot['valor_angulo_y'],
-                'yaw': hotspot['valor_angulo_x'],
-                'text': hotspot['titulo'],
-                'sceneId': hotspot['id_escena'],
-                'targetYaw': hotspot['targetYaw'] || -23,
-                'targetPitch': hotspot['targetPitch'] || 2,
-                'cssClass': hotspot['clase_css'],
-                'createTooltipFunc': this.hotspot.bind(this),
-                'createTooltipArgs': {
-                  'title': hotspot['titulo'],
-                  'id': hotspot['id_hotspot'],
-                  'customIcon': {
-                    'src': hotspot['icono'] || null,
-                    'alt': hotspot['attr_alt'] || null,
-                    'width': hotspot['ancho_icono'] || null,
-                    'height': hotspot['altura_icono'] || null,
-                  }
-                }
-              }
-            }
-
-            if(hotspot['mostrar_modal']=='local'){
-              aux.createTooltipArgs.modal = {
-                  'type': "local",
-                  'title': hotspot['titulo_modal'] || null,
-                  'description': hotspot['descripcion_modal'] || null,
-                  'imagen': {
-                    'src': hotspot['imagen_modal'] || null,
-                    'alt': hotspot['attr_alt'] || null,
-                    'width': hotspot['ancho_imagen'] || null,
-                    'height': hotspot['altura_imagen'] || null,
-                  }
-              }
-            }else if (hotspot['mostrar_modal']=='db') {
-
-              aux.createTooltipArgs.modal = {
-                "type": "db",
-                "id":  hotspot['id_obra'],
-                'imagen': {
-                  'src': hotspot['imagen_modal'] || null,
-                  'alt': hotspot['attr_alt'] || null,
-                  'width': hotspot['ancho_imagen'] || null,
-                  'height': hotspot['altura_imagen'] || null,
-                }
-              }
-            }
+          if(hotspot['show_modal'] == 'local'){
+            aux.createTooltipArgs.modal = hotspot['createTooltipArgs']['modal'],
+            aux.createTooltipArgs.modal.type = "local"
+          } else if (hotspot['show_modal']=='db') {
+            aux.createTooltipArgs.modal = hotspot['createTooltipArgs']['modal'],
+            aux.createTooltipArgs.modal.type = "db"
+          }
 
             // Agregar el hotspot al array
             hotspotsArray.push(aux)
@@ -265,50 +206,42 @@ export class PannellumService {
         )
 
         // Construccion de la Scena
-        let escenaAux = {
-          "title": escena['titulo'],
-          "hfov": escena['hfov'] || 110,
-          "yaw": escena['yaw'] || 150,
-          "panorama": escena['img-360'],
+        let sceneAux = {
+          "id": scene['id'],
+          "title": scene['title'],
+          "hfov": scene['hfov'] || 110,
+          "yaw": scene['yaw'] || 150,
+          "panorama": scene['panorama'],
           "type": "equirectangular",
           "hotSpots": hotspotsArray,
         }
 
-        this.sceneJson[escena['id']] = escenaAux
+        this.sceneJson[scene['id']] = sceneAux
 
       }
     )
-    let scenes = [];
-    for (const k in this.sceneJson) { scenes.push(this.sceneJson[k]) };
 
-    let json = {
-      "scene": scenes
-    }
-
-    let validate = this.validateSchema(json);
+    let validate = this.validateSchema(this.parseSchenesJson());
     if(validate){
       return {error: validate};
     }
-
     return this.sceneJson
   }
-
-
-  /**
-   * initPannellum
-   *
-   * iniciar pannellum
-   * @param panoramaHTML id del elemento panorama en el DOM
-   * @param viewId primera escena a mostrar
-   * @param sceneJson json formateado de manera que sea legible para pannellum para poder construir el tour
-   * @param edit determina si el tour sera editable o no
-   */
+  // * initPannellum
+  //  *
+  //  * iniciar pannellum
+  //  * @param panoramaHTML id del elemento panorama en el DOM
+  //  * @param viewId primera escena a mostrar
+  //  * @param sceneJson json formateado de manera que sea legible para pannellum para poder construir el tour
+  //  * @param edit determina si el tour sera editable o no
+  //  */
   public initPannellum(panoramaHTML, viewId, sceneJson, edit = null) {
 
     console.info("Iniciando pannellum");
 
     // Guardar la escena activa
     this.activeScene = viewId
+    console.log("aqui estoy")
 
     // Iniciar pannellum
     this.pannellumViewer = pannellum.viewer(panoramaHTML, {
@@ -321,12 +254,13 @@ export class PannellumService {
       },
       "scenes": sceneJson
     })
+    console.log("aqui estoy")
 
 
-    // Activar los eventos para agregar hotspots
+    // Activar los eventos para agregar hotSpots
     if (edit) {
 
-      // Evento para click del mouse agregar un nuevo hotspot
+      // Evento para click del mouse agregar un nuevo addHotspothotspot
       this.pannellumViewer.on('mousedown',
         (e) => {
           if (this.mouseToogle) {
@@ -360,7 +294,7 @@ export class PannellumService {
    * @param customFun para usar la funcion custom o no
    */
   public enableAddHotspot(hotspotType, hotspot, customFun = false) {
-
+    hotspotType
     // Activar el evento
     this.toogleAddHotspot(true)
 
@@ -372,7 +306,9 @@ export class PannellumService {
 
     // Si se va a usar la funcion custom
     this.customFunction = customFun
-
+    console.log('eableAddHotspot function');
+    console.log(this.sceneJson);
+    console.log(this.scenes);
   }
 
   /**
@@ -420,10 +356,12 @@ export class PannellumService {
     }
 
     // Agregar el hotspot
-    this.pannellumViewer.addHotSpot(this.nextAddHotspot, this.activeScene)
+    let p = this.pannellumViewer.getScene();
+    this.pannellumViewer.addHotSpot(this.nextAddHotspot, p)
 
+    console.log('add hotpost function pannellum')
     console.log(this.sceneJson);
-
+    console.log(this.scenes);
   }
 
   /**
@@ -432,8 +370,8 @@ export class PannellumService {
    * @param id Id del hotspot a eliminar
    */
   public removeHotspot(id: string) {
-
-    this.pannellumViewer.removeHotSpot(id, this.activeScene)
+    let p = this.pannellumViewer.getScene();
+    this.pannellumViewer.removeHotSpot(id, p)
     console.log(this.sceneJson);
 
   }
@@ -449,7 +387,7 @@ export class PannellumService {
 
   /**
    * getHotspots
-   * Devuelve los hotspots de la escena activa
+   * Devuelve los hotSpots de la escena activa
    * @returns lista de hostspot en caso de existir
    */
   public getHotspots() {
@@ -522,7 +460,7 @@ export class PannellumService {
           data =>{
 
             let modalData = {
-              'title': data.result[0].artifactLabel.value || null,
+              'title': data.result[0].labelArtifact.value || null,
               'description': data.result[0].note.value || null,
               'imagen': {
                 'src': args.modal.imagen.src,
@@ -602,20 +540,20 @@ export class PannellumService {
    * traer como consecuencia la aparicion de errores referentes a que las escenas no tienen ningun hotpots.
    * 
    * getAllHotspots
-   * Obtiene todos los hotspots del recorrido
-   * @return arreglo con todos los hotspots del recorrido
+   * Obtiene todos los hotSpots del recorrido
+   * @return arreglo con todos los hotSpots del recorrido
    */
   public getAllHotspots() {
 
-    let hotspots = [];
+    let hotSpots = [];
     if ( this.sceneJson ){
 
       for (let i in this.scenes) {
         for (let j of this.sceneJson[this.scenes[i]]['hotSpots']){
-          hotspots.push(j)
+          hotSpots.push(j)
         }
       }
-      return hotspots;
+      return hotSpots;
     }
     return []
   }
@@ -625,8 +563,8 @@ export class PannellumService {
    * traer como consecuencia la aparicion de errores referentes a que las escenas no tienen ningun hotpots.
    * 
    * getCurrentSceneHotspots
-   * Obtiene la lista de hotspots de la escena actual
-   * @return arreglo con todos los hotspots de la escena
+   * Obtiene la lista de hotSpots de la escena actual
+   * @return arreglo con todos los hotSpots de la escena
    */
   public getCurrentSceneHotspots() {
     if (this.pannellumViewer ){
@@ -647,7 +585,7 @@ export class PannellumService {
   public getImageSource(scene_id: string) {
     if ( this.sceneJson ){
       if( this.sceneJson[scene_id] ){
-        return this.sceneJson[scene_id]['panorama']
+        return this.sanitizer.bypassSecurityTrustUrl(this.sceneJson[scene_id]['panorama']);
       }
     }
     return []
@@ -670,14 +608,58 @@ export class PannellumService {
     return []
   }
 
+  /**
+   * addSCene
+   * añadir escena
+   * @param scene_id Id de la escena a agregar
+   * @param confi arreglo con las configuraciones(titulo, url) de la nueva escena
+   */
+  public addSCene(scene_id: string, confi: [string,string]){
+    let escenaAux = {
+      "title": confi[0],
+      "hfov": 110,
+      "yaw": 150,
+      "panorama": confi[1],
+      "type": "equirectangular",
+      "hotSpots": [],
+    }
+    this.pannellumViewer.addScene(scene_id,escenaAux);
+    this.scenes.push(scene_id);
+  }
+
+  /**
+   * removeSCene
+   * Eliminar escena
+   * @param id Id de la escena a eliminar
+   */
+   public removeSCene(id: string) {
+    var index = this.scenes.indexOf(id);
+    this.pannellumViewer.removeScene(id);
+    this.scenes.splice(index, 1);
+    console.log(this.sceneJson);
+
+  }
+
   public validateSchema(data) {
     var validate = ajv.compile(this.schema);
     var valid = validate(data);
+    console.log(validate.errors);
   
     if (valid) {
       return false;
     } else {
       return validate.errors[0].message;
     }
+  }
+
+  public parseSchenesJson() {
+    let scenes = [];
+    for (const k in this.sceneJson) { scenes.push(this.sceneJson[k]) };
+
+    let json = {
+      "scenes": scenes
+    }
+
+    return json;
   }
 }

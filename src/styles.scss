@@ -10,7 +10,7 @@
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 
-$black-palette: (
+$main-palette: (
     50: #000000,
     100: #000000,
     200: #000000,
@@ -19,8 +19,8 @@ $black-palette: (
     500: #000000,
     600: #000000,
     700: #000000,
-    800: #000000,
-    900: #000000,
+    800: #AF8B62,
+    900: #795933,
     A100: #000000,
     A200: #000000,
     A400: #000000,
@@ -42,8 +42,8 @@ $black-palette: (
         A700: #ffffff) 
     );
 
-$candy-app-primary: mat-palette($black-palette);
-$candy-app-accent: mat-palette($mat-purple);
+$candy-app-primary: mat-palette($main-palette, 700);
+$candy-app-accent: mat-palette($main-palette, 900, 800);
 
 // The warn palette is optional (defaults to red).
 $candy-app-warn:    mat-palette($mat-red, 900);
@@ -67,7 +67,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .background-color-accent{
-    background-color: mat-color($candy-app-accent);
+    background-color: mat-color($candy-app-accent, 900);
+}
+
+.button-color-accent{
+    background-color: mat-color($candy-app-accent, 900);
+}
+
+.button-color-accent:hover{
+    background-color: mat-color($candy-app-accent, 800)
 }
 
 .color-primary{

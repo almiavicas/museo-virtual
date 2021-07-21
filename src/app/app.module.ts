@@ -40,8 +40,10 @@ import { RemoveHotspotComponent } from './tool-creator/remove-hotspot/remove-hot
 import {MatExpansionModule} from '@angular/material/expansion';
 import { ModalMinimapComponent } from './tool-creator/modal_minimap/modal_minimap.component';
 import { CanvasMinimapaComponent } from './tool-creator/canvas_minimapa/canvas_minimapa.component';
-import { RemovePinsComponent } from './tool-creator/remove_pins/remove_pins.component';
 import { MsgErrorComponent } from './tool-creator/msg-error/msg-error.component';
+import { RemovePinsComponent } from './tool-creator/remove_pins/remove_pins.component';
+import { LoginComponent,DialogErrorLogin } from './toolbar/login/login.component';
+import { SignUpComponent,DialogErrorSignUp, DialogSuccessSignUp } from './toolbar/signUp/signUp.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +65,12 @@ import { MsgErrorComponent } from './tool-creator/msg-error/msg-error.component'
     RemoveHotspotComponent,
     ModalMinimapComponent,
     RemovePinsComponent,
-    MsgErrorComponent
+    MsgErrorComponent,
+    LoginComponent,
+    DialogErrorLogin,
+    SignUpComponent,
+    DialogErrorSignUp,
+    DialogSuccessSignUp,
   ],
   imports: [
     BrowserModule,
@@ -87,7 +94,7 @@ import { MsgErrorComponent } from './tool-creator/msg-error/msg-error.component'
     MatListModule,
     MatExpansionModule,
     MatTabsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   entryComponents: [
     UploadImageComponent,
@@ -96,7 +103,12 @@ import { MsgErrorComponent } from './tool-creator/msg-error/msg-error.component'
     ModalComponent,
     RemoveHotspotComponent,
     ModalMinimapComponent,
-    RemovePinsComponent
+    RemovePinsComponent,
+    LoginComponent,
+    DialogErrorLogin,
+    SignUpComponent,
+    DialogSuccessSignUp,
+    DialogErrorSignUp,
   ],
   providers: [],
   bootstrap: [AppComponent]

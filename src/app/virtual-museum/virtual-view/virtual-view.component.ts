@@ -27,13 +27,20 @@ export class VirtualViewComponent implements OnInit, AfterViewInit {
 
   constructor(
     public dialog: MatDialog,
-    public apiServive: ApiService,
+    public api: ApiService,
     public pannellumService : PannellumService
   ) { }
 
   ngOnInit(): void {
     console.log(this.viewId);
   }
+
+
+  //------------------------------------------------------------
+  userRole = this.api.userRole;
+  //------------------------------------------------------------
+
+
 
   ngAfterViewInit(): void {
     //  Funciones del pannellum service para crear las escenas y el tour

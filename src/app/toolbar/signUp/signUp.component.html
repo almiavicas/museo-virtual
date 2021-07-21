@@ -1,0 +1,182 @@
+<form class="form" [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+    <div class="card card-login" style="margin-top: 0px; margin-bottom: -15px;">
+      <div class="card-header text-center" style="background-color: #795933">
+        <h4 class="card-title" style="color: white;">Registra un nuevo admin de Museo Virtual</h4>
+      </div>
+      <div class="card-body">
+        <span class="bmd-form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="material-icons">email</i>
+              </span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Correo"
+              required
+              email
+              formControlName="correo"
+            />
+          </div>
+        </span>
+        <div
+          *ngIf="
+            form.controls['correo'].invalid &&
+            (form.controls['correo'].dirty || form.controls['correo'].touched)
+          "
+        >
+          <div *ngIf="form.controls['correo'].errors.required">
+            <p style="color: rgb(228, 4, 4); margin: -0.5%; margin-left: 20%">
+              No puedes dejar el campo en blanco.
+            </p>
+          </div>
+          <div *ngIf="form.controls['correo'].errors.email">
+            <p style="color: rgb(228, 4, 4); margin: -0.5%; margin-left: 20%">
+              Debes de introducir un correo válido.
+            </p>
+          </div>
+        </div>
+        <span class="bmd-form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="material-icons">face</i>
+              </span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Nombre"
+              required
+              formControlName="name"
+            />
+          </div>
+        </span>
+        <div
+          *ngIf="
+            form.controls['name'].invalid &&
+            (form.controls['name'].dirty || form.controls['name'].touched)
+          "
+        >
+          <div *ngIf="form.controls['name'].errors.required">
+            <p style="color: rgb(228, 4, 4); margin: -0.5%; margin-left: 20%">
+              No puedes dejar el campo en blanco.
+            </p>
+          </div>
+        </div>
+        <span class="bmd-form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="material-icons">face</i>
+              </span>
+            </div>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Apellido"
+              required
+              formControlName="lastName"
+            />
+          </div>
+        </span>
+        <div
+          *ngIf="
+            form.controls['lastName'].invalid &&
+            (form.controls['lastName'].dirty || form.controls['lastName'].touched)
+          "
+        >
+          <div *ngIf="form.controls['lastName'].errors.required">
+            <p style="color: rgb(228, 4, 4); margin: -0.5%; margin-left: 20%">
+              No puedes dejar el campo en blanco.
+            </p>
+          </div>
+        </div>
+        <span class="bmd-form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="material-icons">lock_outline</i>
+              </span>
+            </div>
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Contraseña"
+              required
+              formControlName="password"
+            />
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i
+                  class="material-icons"
+                  title="Ingrese la contraseña que quieres 
+usar para el sistema de Museo Virtual"
+                  >help_outline</i
+                >
+              </span>
+            </div>
+          </div>
+        </span>
+        <div
+          *ngIf="
+            form.controls['password'].invalid &&
+            (form.controls['password'].dirty || form.controls['password'].touched)
+          "
+        >
+          <div *ngIf="form.controls['password'].errors.required">
+            <p style="color: rgb(228, 4, 4); margin: -0.5%; margin-left: 20%">
+              No puedes dejar el campo en blanco.
+            </p>
+          </div>
+        </div>
+        <span class="bmd-form-group">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="material-icons">lock_outline</i>
+              </span>
+            </div>
+            <input
+              type="password"
+              class="form-control"
+              placeholder="Confirma la contraseña"
+              required
+              formControlName="validatePassword"
+            />
+          </div>
+        </span>
+        <div *ngIf="checkSamePassword()">
+          <p style="color: rgb(228, 4, 4); margin: -0.5%; margin-left: 20%">
+            Las contraseñas no coinciden.
+          </p>
+        </div>
+        <div
+          *ngIf="
+            form.controls['validatePassword'].invalid &&
+            (form.controls['validatePassword'].dirty ||
+              form.controls['validatePassword'].touched)
+          "
+         >
+          <div *ngIf="form.controls['validatePassword'].errors.required">
+            <p style="color: rgb(228, 4, 4); margin: -0.5%; margin-left: 20%">
+              No puedes dejar el campo en blanco.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer justify-content-center">
+        <button
+          class="btn btn-color-accent btn-round"
+          [disabled]="form.invalid"
+          style="color: white; background-color: #795933;"
+          type="submit"
+          color="accent"
+        >
+          Registrate
+        </button>
+      </div>
+    </div>
+  </form>

@@ -47,8 +47,11 @@ export class ModalMinimapComponent implements OnInit {
   aceptar(){
     // verificamos el tamaño de los arreglos de pines para verificar si se agrego uno nuevo o no
       this.newSize = this.tour.pins.length
-    if(this.newSize > this.oldSize){
+    if((this.newSize > this.oldSize) && !(this.selected === "Escena a navegar") ){
       this.tour.views.push(this.selected);
+    }
+    if((this.newSize > this.oldSize) && this.selected === "Escena a navegar"){
+      this.tour.pins.pop()
     }
       this.dialogRef.close({
       result: this.tour,

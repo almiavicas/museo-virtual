@@ -1,4 +1,4 @@
-export let config = {
+{
     "scenes":[
         {
             "id":"pasillo-1",
@@ -341,4 +341,5 @@ export let config = {
             ]
         }
     ]
-};
+}
+

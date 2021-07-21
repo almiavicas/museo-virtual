@@ -1,31 +1,69 @@
-<mat-grid-list cols="3" rowHeight="420">
+<!-- Header: Imagen de la página de inicio (User: visitante) -->
+<div *ngIf="userRole=='visitante'" style="position: relative">  
+  <img class="landing-image" src="https://cdn.cnn.com/cnnnext/dam/assets/181008183429-muse-larco-peru-full-169.jpg">
+
+  <div class="landing-card">
+    <mat-card-title class="title-page">BIENVENIDO</mat-card-title>
+    <mat-card-subtitle class="subtitle-page">Explora y descubre todo sobre los museos de Perú</mat-card-subtitle>
+    <hr size="1" width="65%" class="title-line">
+  </div>
+</div>
+
+
+<!-- Información de la página de inicio (User: visitante) -->
+<div *ngIf="userRole=='visitante'" class="landing-info">
+  <mat-card-title style="margin-bottom: 20px">Colecciones, Recorridos Virtuales, y mucho más...</mat-card-title>
+  <mat-card-subtitle>Aliquam egestas elementum mid et, sit habitasse ac et lorem in urna nunc ac phasellus, et turpis! Turpis, integer. Dignissim, ut dolor ut, in pulvinar tincidunt natoque porttitor eros. Aliquam egestas elementum mid et, sit habitasse ac et lorem in urna nunc ac phasellus, et turpis! Turpis, integer. Dignissim, ut dolor ut, in pulvinar tincidunt natoque porttitor eros.</mat-card-subtitle>
+  
+  <hr size="1" width="20%">
+</div>
+
+
+<!-- Museos disponibles -->
+<mat-grid-list [cols]="breakpoint" [rowHeight]="rowHeight" [gutterSize]="'50px'" class="grid-list">
+  
   <mat-grid-tile *ngFor="let museum of museums" class="museum-tile">
-    <mat-card class="museum-card">
-      <mat-card-header>
+    <mat-card class="museum-card" style="overflow: hidden">
+
+      <img mat-card-image class="card-image" [src]="'https://www.wamanadventures.com/blog/wp-content/uploads/2018/05/Museo-Larco-Waman-Adventures-2.jpg'" alt="">
+      
+      <mat-card-header style="justify-content: center">
         <mat-card-title>{{ museum.label }}</mat-card-title>
         <!-- <mat-card-subtitle>{{ museum.location }}</mat-card-subtitle> -->
       </mat-card-header>
-      <img mat-card-image class="featured-image" [src]="'../../../assets/svg/museum-pin.jpeg'" alt="">
+
       <mat-card-content>
         <!-- <span>{{ museum.description }}</span> -->
+        <mat-card-subtitle>Esta es una descripción del museo {{museum.label}}, aquí va su descripción. También aparece su ubicación.</mat-card-subtitle>
       </mat-card-content>
-      <mat-card-actions>
-        <button mat-button [routerLink]="['/admin', museum.label]" color="primary">ADMIN</button>
-        <button mat-button [routerLink]="['/admin']" color="primary">VIEW TOUR</button>
+
+      <!-- Botones para el usuario administrador -->
+      <mat-card-actions *ngIf="userRole=='admin'">
+        <button mat-button [routerLink]="['/admin', museum.label]" color="primary">ADMINISTRAR</button>
+        <button mat-button [routerLink]="['/admin']" color="primary">VER RECORRIDO</button>
       </mat-card-actions>
+
+      <!-- Botones para el usuario visitante -->
+      <mat-card-actions *ngIf="userRole=='visitante'" style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); padding-bottom: 40px">
+        <button mat-raised-button [routerLink]="['/admin', museum.label]" class="button-visit button-color-accent" color="accent">VISITAR</button>
+      </mat-card-actions>
+
     </mat-card>
   </mat-grid-tile>
-  <mat-grid-tile  class="museum-tile">
+
+  
+  <!-- Agregar nuevo museo -->
+  <mat-grid-tile *ngIf="userRole=='admin'" class="museum-tile">
     <mat-card class="add-museum-card">
       <mat-card-content>
         <button  class="button-museum" [routerLink]="['/add-museum']">
           <img class="museum-pin" src="../../../assets/svg/museum-pin.jpeg">
         </button>
       </mat-card-content>
-      <mat-card-title class="title-text">Add a museum</mat-card-title>
-      <mat-card-subtitle class="text">If you want to add a museum, click on the pin</mat-card-subtitle>
+      <mat-card-title class="title-text">Agregar nuevo museo</mat-card-title>
+      <mat-card-subtitle class="text">Para agregar un nuevo museo, clickea sobre el pin</mat-card-subtitle>
     </mat-card>
   </mat-grid-tile>
-</mat-grid-list>
 
+</mat-grid-list>
 

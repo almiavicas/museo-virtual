@@ -51,3 +51,202 @@ h2 {
   cursor: pointer;
   color: blue;
 }
+
+.back-button{
+  background-color: rgba(255, 255, 255, 0); 
+  margin-top: 10px; 
+  margin-bottom: 10px;
+  border-radius: 9999px;
+}
+
+.back-button:hover{
+  opacity: 0.7;
+}
+
+.cover-image{
+  object-fit: cover;
+  width: 100%;
+  height: 300px;
+}
+
+.cover-card{
+  //background-color: rgba(121, 89, 51, 0.4); 
+  background-color: rgba(0, 0, 0, 0.4);
+  min-width: 40%; 
+  position: absolute; 
+  top: 50%;  
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 800px){
+  .cover-card{
+    width: 100%;
+  }
+}
+
+.title-page{
+  text-align: center;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  color: #ffffff;
+  font-weight: bold;
+  letter-spacing: 3px;
+  line-height: 1.2;
+}
+
+.subtitle-page{
+  text-align: center;
+  font-size: 18px;
+  color: #ffffff;
+  font-family: "Bookman";
+  margin-top: 50px;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.title-line{
+  border-top: 1px solid rgba(255, 255, 255, 1);
+  border-right: 0px;
+  border-left: 0px;
+  padding-bottom: 10px;
+}
+
+.button-tour{
+  border-radius: 9999px;
+  width: 220px;
+  display: block;
+  margin: 0 auto;
+  margin-top: 20px;
+  letter-spacing: 3px;
+  font-size: 10px;
+  transition: 0.3s all ease-in-out;
+}
+
+.button-tour:hover{
+  width: 240px;
+}
+
+.title-div{
+  display: flex; 
+  flex-direction: row; 
+  align-items: center; 
+  padding: 20px;
+}
+
+.virtual-tour-title{
+  font-size: 15px; 
+  letter-spacing: 3px; 
+  flex-grow: 0;
+}
+
+.inline-line{
+  display: inline-block; 
+  width: 80%; 
+  margin-left: 10px;
+}
+
+.virtual-tour-text{
+  padding: 20px; 
+  font-size: 16px; 
+  text-align: center; 
+  letter-spacing: 2px; 
+  line-height: 1.5;
+}
+
+.tour-info-card{
+  width: 90%; 
+  height: 80%; 
+  background-color: rgba(121,89,51,0.2); 
+  display: flex; 
+  flex-direction: row; 
+  object-fit: cover;
+}
+
+.tour-info-image{
+  width: 40%; 
+  height: 100%;
+}
+
+.tour-info-title{
+  text-align: center; 
+  margin-top: 10px; 
+  font-size: 15px; 
+  letter-spacing: 2px;
+}
+
+.tour-info-content{
+  text-align: center; 
+  margin-left: 10px; 
+  margin-right: 10px; 
+  padding-bottom: 10px;
+}
+
+.circle-number{
+  width: 50px; 
+  height: 50px; 
+  border-radius: 100%; 
+  font-size: 20px; 
+  color: #ffffff; 
+  opacity: 0.8; 
+  text-align: center; 
+  display: table-cell; 
+  vertical-align: middle;
+}
+
+.room-content{
+  text-align: right; 
+  margin-top: 10px; 
+  font-size: 20px;
+}
+
+@media (max-width: 500px){
+  .room-content{
+    font-size: 15px;
+  }
+}
+
+.grid-list{
+  margin-top: 0px; 
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.artifact-card{
+  width: 300px; 
+  height: 400px; 
+  text-align: center; 
+  overflow: hidden;
+  transition: 0.3s all ease-in-out;
+}
+
+.artifact-card:hover{
+  box-shadow: 0 8px 8px 8px rgba(121,89,51,.1), 0 8px 8px 0 rgba(121,89,51,.05), 0 8px 8px 0 rgba(121,89,51,.07) !important;
+  margin-top: -20px;
+}
+
+.title-artifact-card{
+  font-family: "Bookman";
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.artifact-image{
+  width: 100px; 
+  height: 100px; 
+  object-fit: contain; 
+  margin-bottom: 20px; 
+  mix-blend-mode: multiply;
+  transform: scale(2);
+}
+
+.button-comments{
+  border-radius: 9999px;
+  width: 150px;
+  color: #ffffff;
+  position: absolute; 
+  bottom: 0; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  margin-bottom: 20px
+}

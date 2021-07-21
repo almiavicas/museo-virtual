@@ -11,6 +11,21 @@ export interface MuseumsResponse {
   result: MuseumOverview[],
 }
 
+export interface userLogin {
+  ok: boolean;
+  message: string
+  user: any
+  token: string
+}
+
+export interface userRegister {
+  ok: boolean;
+  registered: string
+  message: string
+  user: any
+  token: string
+}
+
 export interface MuseumArtifactsResponse {
   ok: boolean,
   result: Artifact[],
@@ -24,6 +39,56 @@ export class ApiService {
   constructor(
     private http: HttpClient,
   ) { }
+
+
+
+  //---------------------------------------------------------------------------------
+  userRole = 'visitante';
+  //userRole = 'admin';
+  //---------------------------------------------------------------------------------
+
+  /** Servicio para realizar cambio de la vista que se muestra segun el tipo de usuario.
+   * @returns
+   */
+   changeRole() {
+     let vista = this.userRole
+     if(vista === "visitante"){
+       this.userRole = "admin"
+     }
+     else{
+       this.userRole = "visitante"
+     }
+      
+  }
+
+  /** Servicio para realizar login de un usuario.
+   * @param {string} email0 correo del usuario a realizar login
+   * @param {string} password0 contrasena del usuario
+   * @returns
+   */
+   login(email0: string, password0: string): Observable<userLogin> {
+    const url = environment.apiUrl + `/users/login`;
+    const payload = { email: email0, password: password0 };
+    return this.http
+      .post<userLogin>(url, { email: email0, password: password0 })
+      .pipe(tap(console.log));
+  }
+
+  /** Servicio para realizar registro de un admin.
+   * @param {string} email0 correo del Usuario a realizar login
+   * @param {string} first_name0 nombre del usuario
+   * @param {string} last_name0 apellido del usuario
+   * @param {string} password0 contrasena del usuario
+   * @param {string} type0 tipo de usuario
+   * @returns
+   */
+   signUp(email0: string, first_name0: string, last_name0: string, password0: string, type0: string): Observable<userRegister> {
+    const url = environment.apiUrl + `/users/new_user`;
+    const payload = { email: email0, first_name: first_name0, last_name: last_name0, password: password0, type: type0 };
+    return this.http
+      .post<userRegister>(url, { email: email0, first_name: first_name0, last_name: last_name0, password: password0, type: type0 })
+      .pipe(tap(console.log));
+  }
 
   /**
    * Fetches a museum and it's details.
@@ -63,6 +128,18 @@ export class ApiService {
     const url = environment.apiUrl + `/artifact/${id}`;
     return this.http.get<MuseumArtifactsResponse>(url).pipe(tap(console.log));
   };
+
+
+  /**
+    * Fetches an artifact image url.
+    * @param id - Artifact identifier.
+    * @returns The url of the artifact image.
+    */
+  getArtifactImage(id: string){
+    const url = environment.apiUrl + `/image/${id}`;
+    return url;
+  };
+
 
   /**
    * Executes an http get request.

@@ -7,7 +7,10 @@
 
 .museum-card {
   width: 80%;
-
+  height: 400px;
+  text-align: center;
+  transition: 0.3s all ease-in-out;
+  
   mat-card-content {
     margin-top: 16px;
     padding: 8px 16px 0px 16px;
@@ -18,9 +21,19 @@
   }
 }
 
+.museum-card:hover{
+  box-shadow: 0 8px 8px 8px rgba(121,89,51,.1), 0 8px 8px 0 rgba(121,89,51,.05), 0 8px 8px 0 rgba(121,89,51,.07) !important;
+  margin-top: -20px;
+}
+
+@media (max-width: 500px){
+  .museum-card {
+    height: 500px;
+  }
+}
+
 .add-museum-card {
   width: 80%;
-  // height: 80%;
 
   mat-card-content {
     margin-top: 16px;
@@ -49,4 +62,88 @@
   padding: 10px 0px;
   display: flex;
   justify-content: center;
+}
+
+.button-visit{
+  border-radius: 9999px;
+  width: 150px;
+}
+
+.card-image{
+  height: 150px;
+  object-fit: cover;
+}
+
+.title-page{
+  text-align: center;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  color: #ffffff;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.subtitle-page{
+  text-align: center;
+  margin-top: 50px;
+  font-size: 18px;
+  color: #ffffff;
+  font-family: "Bookman";
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.title-line{
+  border-top: 1px solid rgba(255, 255, 255, 1);
+  border-right: 0px;
+  border-left: 0px;
+}
+
+.landing-image{
+  object-fit: cover;
+  width: 100%;
+  height: 400px;
+  filter: brightness(0.4);
+}
+
+.landing-card{
+  background-color: rgba(121, 89, 51, 0.5); 
+  width: 40%; 
+  position: absolute; 
+  top: 80%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 900px){
+  .landing-card{
+    width: 60%;
+  }
+}
+
+.landing-info{
+  text-align: center; 
+  width: 40vw; 
+  margin: 0 auto; 
+  margin-top: 70px;
+}
+
+@media (max-width: 900px){
+  .landing-info{
+    width: 90vw;
+  }
+}
+
+.grid-list{
+  padding-bottom: 40px; 
+  margin-top: 40px; 
+  margin-left: 50px;
+  margin-right: 50px
+}
+
+.card-container{
+  width: 1200px;
+  margin: 20px auto;
+  columns: 3;
+  column-gap: 40px;
 }

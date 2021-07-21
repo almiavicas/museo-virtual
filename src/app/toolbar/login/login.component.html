@@ -1,0 +1,73 @@
+<form class="form" [formGroup]="form" (ngSubmit)="onSubmit(form.value)">
+  <div class="card card-login" style="margin-top: 0px; margin-bottom: -15px;">
+    <div class="card-header text-center" style="background-color: #795933">
+      <h4 class="card-title" style="color: white;">Inicia sesión en Museo Virtual</h4>
+    </div>
+    <div class="card-body">
+      <span class="bmd-form-group">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="material-icons">email</i>
+            </span>
+          </div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Correo"
+            required
+            formControlName="correo"
+          />
+        </div>
+      </span>
+      <span class="bmd-form-group">
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="material-icons">lock_outline</i>
+            </span>
+          </div>
+          <input
+            type="password"
+            class="form-control"
+            placeholder="Contraseña"
+            required
+            formControlName="password"
+          />
+          <div class="input-group-prepend">
+            <span class="input-group-text">
+              <i
+                class="material-icons"
+                title="Ingrese la contraseña que escogio 
+para el acceso al sistema de Museo Virtual"
+                >help_outline</i
+              >
+            </span>
+          </div>
+        </div>
+      </span>
+    </div>
+    <!-- routerLink="/auth/recover-password" va en el boton de abajo -->
+    <span class="input-group-text justify-content-center">
+      <i class="material-icons">psychology</i>
+      <a
+        class="button"
+        type="button"
+        style="background: none; border: none; color: rgb(97, 150, 247)"
+      >
+        ¿Has olvidado la contraseña?
+      </a>
+    </span>
+    <div class="card-footer justify-content-center">
+      <button
+        class="btn btn-color-accent btn-round"
+        [disabled]="form.invalid"
+        style="color: white; background-color: #795933;"
+        type="submit"
+        color="accent"
+      >
+        Iniciar Sesion
+      </button>
+    </div>
+  </div>
+</form>

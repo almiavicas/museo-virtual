@@ -1,3 +1,12 @@
-<h1>Showing {{ viewId }}</h1>
+<!-- Panorama (User: admin) -->
+<div *ngIf="userRole=='admin'">
+	<h1>Mostrando {{ viewId }}</h1>
 
-<div id="panorama" ></div>
+	<div id="panorama" class="panorama-admin"></div>
+</div>
+
+
+<!-- Panorama (User: visitante) -->
+<div *ngIf="userRole=='visitante'">
+	<div id="panorama" class="panorama-visitor"></div>
+</div>

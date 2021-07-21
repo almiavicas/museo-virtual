@@ -4,7 +4,7 @@
       <app-canvas_minimapa [pins]="tour.pins" [selectedPin]="selectedPin" [img]="img" [place] = "true" class="croquis"></app-canvas_minimapa>
     </div>
     <select name="miselect" [(ngModel)]="selected">
-        <option> Escena a navegar </option>
+        <option disabled> Escena a navegar </option>
         <option [value]="item" *ngFor="let item of scenesAvailable">{{item}}</option> 
     </select>
 </div>

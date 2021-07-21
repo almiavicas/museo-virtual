@@ -1,38 +1,41 @@
-<!-- 
 <mat-toolbar color="primary">
-  <span>Museo Virtual</span>
-  <span class="spacer"></span>
-  <button mat-raised-button routerLink="/" routerLinkActive="active">
-    <mat-icon>home</mat-icon>
-  </button>
+		
+	<mat-toolbar-row style="display: flex; justify-content: center">
+		<span class="header-title">Museo</span>
+		<span class="header-title"><br/>Virtual</span>
+	</mat-toolbar-row>
 
-  <button mat-raised-button color="primary" routerLink="/tool-creator" routerLinkActive="active">
-    <mat-icon>build</mat-icon>
-  </button>
-</mat-toolbar>
--->
-
-<mat-toolbar color="primary">
-	<div style="height: 9vh">
-		<mat-toolbar-row style="display:flex; justify-content: center">
-			<span class="header-title">Museo</span>
-			<span class="header-title"><br/>Virtual</span>
-		</mat-toolbar-row>
-	</div>
-
-	<hr size="1" width="95%" class="title-line">
+	<mat-toolbar-row style="height: 0vh; margin-bottom: 5px">
+		<hr size="1" width="95%" class="title-line">
+	</mat-toolbar-row>
 
 	<mat-toolbar-row style="height: 7vh">
-
 		<span class="spacer"></span>
 	  	<button mat-raised-button class="button-toolbar" color="primary" routerLink="/" routerLinkActive="active">
 	    	INICIO
 	  	</button>
 
-	  	<span class="spacer2"></span>
-	  	<button mat-raised-button class="button-toolbar" color="primary" routerLink="/tool-creator" routerLinkActive="active">
+	  	<span *ngIf="userRole=='admin'" class="spacer2"></span>
+	  	<button *ngIf="userRole=='admin'" mat-raised-button class="button-toolbar" color="primary" routerLink="/tool-creator" routerLinkActive="active">
 	    	EDITOR
 	  	</button>
+
+	  	<span *ngIf="userRole=='visitante'" class="spacer2"></span>
+	  	<button mat-raised-button *ngIf="userRole=='visitante'" class="button-toolbar" color="accent" style="border-radius: 9999px" (click)="openLogin()">
+	    	INICIAR SESIÓN
+	  	</button>
+
+		<span *ngIf="userRole=='admin'" class="spacer2"></span>
+	  	<button mat-raised-button *ngIf="userRole=='admin'" class="button-toolbar" color="accent" style="border-radius: 9999px" (click)="openRegister()">
+	    	REGISTRAR ADMIN
+	  	</button>
+
+	  	<span *ngIf="userRole=='admin'" class="spacer2"></span>
+	  	<button mat-raised-button *ngIf="userRole=='admin'" class="button-toolbar" color="accent" style="border-radius: 9999px" (click)="signOff()">
+	    	CERRAR SESIÓN
+	  	</button>
+
 	</mat-toolbar-row>
+	
 </mat-toolbar>
 
