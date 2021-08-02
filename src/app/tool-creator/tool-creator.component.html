@@ -371,6 +371,8 @@
             <!-- Vista tab para agregar escenas -->
             <mat-tab label= "Agregar escena" >
                 <input type="file" id="image_upload" name="image_upload" accept=".jpg, .jpeg, .png" (change)="FileSelected($event)" style="margin-top: 15px;">
+                <button mat-raised-button color="{{pannellumService.mouseToogle ? 'primary' : ''}}" class="add-hotspot-button" style="margin-top: 20px;"
+                        (click)="viewScenes()"> Ver escenas disponibles</button>
                 <div id="preview" style="height: 350px; width: 400px; background-image: url(/assets/images/no_escenas.png); background-size: 300px 400px; background-repeat: no-repeat; background-position: center; margin-left: 10%;"></div>
                 <form [formGroup]="formNewScene" (ngSubmit)="onSubmit()">
 

@@ -41,6 +41,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { ModalMinimapComponent } from './tool-creator/modal_minimap/modal_minimap.component';
 import { CanvasMinimapaComponent } from './tool-creator/canvas_minimapa/canvas_minimapa.component';
 import { MsgErrorComponent } from './tool-creator/msg-error/msg-error.component';
+import { ImgServerComponent } from './tool-creator/img-server/img-server.component';
 import { RemovePinsComponent } from './tool-creator/remove_pins/remove_pins.component';
 import { LoginComponent,DialogErrorLogin } from './toolbar/login/login.component';
 import { SignUpComponent,DialogErrorSignUp, DialogSuccessSignUp } from './toolbar/signUp/signUp.component';
@@ -71,6 +72,7 @@ import { SignUpComponent,DialogErrorSignUp, DialogSuccessSignUp } from './toolba
     SignUpComponent,
     DialogErrorSignUp,
     DialogSuccessSignUp,
+    ImgServerComponent,
   ],
   imports: [
     BrowserModule,
@@ -109,6 +111,7 @@ import { SignUpComponent,DialogErrorSignUp, DialogSuccessSignUp } from './toolba
     SignUpComponent,
     DialogSuccessSignUp,
     DialogErrorSignUp,
+    ImgServerComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -9,6 +9,10 @@ import { RemoveHotspotComponent } from './remove-hotspot/remove-hotspot.componen
 import { ModalMinimapComponent } from './modal_minimap/modal_minimap.component';
 import { RemovePinsComponent } from './remove_pins/remove_pins.component';
 import { MsgErrorComponent } from './msg-error/msg-error.component';
+import { ImgServerComponent } from './img-server/img-server.component';
+import { ApiService } from 'src/app/services/api.service';
+
+
 
 declare var pannellum
 
@@ -105,6 +109,7 @@ export class ToolCreatorComponent implements OnInit {
     private sanitizer: DomSanitizer,
     public pannellumService: PannellumService,
     public dialog: MatDialog,
+    private api: ApiService,
     private _snackBar: MatSnackBar
   ) { }
 
@@ -617,4 +622,46 @@ public goScene(scene) {
     const currentDate = new Date();
     this.filename = `${currentDate.toISOString()}.json`;
   }
+
+  /**
+  * viewScenes()
+  *
+  * Funcion que permite mostrar las escenas de un museo
+  */
+  public viewScenes() {
+    // abrimos el modal
+    const dialogRef = this.dialog.open(ImgServerComponent, {
+      width: '700px',
+      height: '400px',
+      //data: {name: scene, type: true }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      
+      //if (result && result.result)
+      var result2 = result.result
+      console.log(result2)
+      const contentType = 'image/jpg';
+      const byteCharacters = atob(result2);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], {type: contentType});
+      const blobUrl = URL.createObjectURL(blob);
+      console.log(blobUrl)
+
+      this.urLPanorama = URL.createObjectURL(blob);
+      //this.urlPanorama = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(event.target.files[0]));
+      pannellum.viewer('preview', {
+        "type": "equirectangular",
+        "panorama": blobUrl,
+        "autoLoad": true
+      });
+        this.newScene = true;
+     
+    });
+   }
+
 }

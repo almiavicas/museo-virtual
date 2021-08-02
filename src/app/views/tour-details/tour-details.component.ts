@@ -86,6 +86,9 @@ export class TourDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.museumSub = this.api.getMuseumDetails(this.museumId).subscribe((response) => {
         this.museumRooms = [...response.rooms];
+        this.museum.location = response.location;
+        this.museum.description = response.description;
+        this.museum.id = response.id;
       }, console.error);
     }, console.error);
 
@@ -196,8 +199,19 @@ export class TourDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   saveChanges = (): void => {
+    var description = (<HTMLInputElement>document.getElementById("new_description")).value;
+    this.api.updateDescription(this.museum.id,this.museum.description, description).subscribe(
+      (response) => {
+        if (response.ok) {
+          console.log("descripcion cambiada")
+          this.editMode = !this.editMode;
+        }
+      },
+      (error) => {
+        alert("error")
+      }
+    );
     console.log('saving changes', this.museum);
-    this.toggleEditMode();
   }
 
 

@@ -115,7 +115,7 @@
         <mat-card-title style="margin-bottom: 20px; line-height: 1.2" class="title-artifact-card"> {{ artifact.labelArtifact }} </mat-card-title>
 
         <img class="artifact-image" src="{{ getArtifactImage(artifact.id) }}" 
-             onerror="this.src='./assets/images/no_image.png'; this.style.width='50px'; this.style.height='50px'; this.style.marginTop='20px'; this.style.opacity='0.1';"  alt="..." />
+             onerror="this.src='./assets/images/no_image.png'; this.style.width='100px'; this.style.height='100px'; this.style.opacity='0.1';"  alt="..." />
 
         <mat-card-subtitle style="margin-bottom: 0px"> Autor </mat-card-subtitle>
         <mat-card-content> {{ artifact.labelCreator }} </mat-card-content>
@@ -141,7 +141,7 @@
     <img [src]="museum.featuredImage" alt="Featured Image" />
   </mat-grid-tile>
   <mat-grid-tile class="display-container">
-    <div class="action-buttons">
+    <div class="action-buttons" style="margin-top: -45px;">
       <button
         mat-raised-button
         *ngIf="!editMode"
@@ -160,26 +160,32 @@
         Guardar
         <mat-icon>save</mat-icon>
       </button>
-      <button mat-raised-button color="warn" (click)="openDeleteDialog()">
+      <button mat-raised-button color="warn" *ngIf="!editMode" (click)="openDeleteDialog()">
         Eliminar
         <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-raised-button color="warn" *ngIf="editMode" (click)="toggleEditMode()">
+        Cancelar
+        <mat-icon>cancel</mat-icon>
       </button>
     </div>
     <form class="expand padding">
       <mat-form-field appearance="fill" class="expand">
         <mat-label>Título</mat-label>
-        <input matInput [disabled]="!editMode" [value]="museum.title" />
+        <input matInput disabled [value]="museum.title" />
       </mat-form-field>
       <mat-form-field appearance="fill" class="expand">
         <mat-label>Ubicación</mat-label>
-        <input matInput [disabled]="!editMode" [value]="museum.location" />
+        <input matInput disabled [value]="museum.location" />
       </mat-form-field>
       <mat-form-field appearance="fill" class="expand">
         <mat-label>Descripción</mat-label>
         <textarea
+          id = "new_description"
           matInput
           [disabled]="!editMode"
           [value]="museum.description"
+          style="height: 84px;"
         ></textarea>
       </mat-form-field>
     </form>
